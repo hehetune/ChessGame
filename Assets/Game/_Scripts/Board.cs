@@ -51,7 +51,7 @@ namespace Game._Scripts
         {
             SetSlotsPosition();
         }
-        
+
         private void SetSlotsPosition()
         {
             for (int i = 0; i < rowsOfSlot.Count; i++)
@@ -86,7 +86,7 @@ namespace Game._Scripts
         {
             return x >= 0 && y >= 0 && x < 8 && y < 8 && rowsOfSlot[y].row[x].available;
         }
-        
+
         public bool IsValidEat(int x, int y)
         {
             return x >= 0 && y >= 0 && x < 8 && y < 8 && !rowsOfSlot[y].row[x].available;
@@ -97,10 +97,10 @@ namespace Game._Scripts
             chessUnit.transform.position = rowsOfSlot[y].row[x].transform.position;
         }
 
-        public void MarkSlot(int x, int y, bool canEat = false)
+        public void MarkSlot(int x, int y, SlotState slotState)
         {
             Debug.Log("MarkSlot " + x + "," + y);
-            rowsOfSlot[y].row[x].Mark(canEat);
+            rowsOfSlot[y].row[x].Mark(slotState);
         }
 
         public void UnMarkSlot(int x, int y)
@@ -108,18 +108,23 @@ namespace Game._Scripts
             rowsOfSlot[y].row[x].UnMark();
         }
 
-        public void ToggleSelectChess(ChessUnit chessUnit)
+        public void SetSelectChess(ChessUnit chessUnit)
         {
-            if (curActiveChessUnit != null)
+            if (chessUnit == null || curActiveChessUnit != chessUnit)
             {
                 Subject.Notify(EventKey.UnmarkSlot);
-                curActiveChessUnit = null;
             }
-            else
+
+            if (chessUnit != null)
             {
-                curActiveChessUnit = chessUnit;
+                GetSlotByChessUnit(chessUnit).Mark(SlotState.Selected);
             }
+
+            curActiveChessUnit = chessUnit;
         }
+
+        private Slot GetSlotByChessUnit(ChessUnit chessUnit) =>
+            rowsOfSlot[chessUnit.boardPosition.y].row[chessUnit.boardPosition.x];
 
         private void SetupInstance()
         {

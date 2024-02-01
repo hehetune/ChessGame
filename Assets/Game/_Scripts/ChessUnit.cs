@@ -77,21 +77,21 @@ namespace Game._Scripts
             }
         }
 
-        private void ToggleShowActionPath()
+        private void SelectChess()
         {
-            Board.Instance.ToggleSelectChess(this);
             if (Board.Instance.curActiveChessUnit == this)
             {
+                Board.Instance.SetSelectChess(null);
                 return;
             }
-            Board.Instance.ToggleSelectChess(this);
+            Board.Instance.SetSelectChess(this);
 
             chessBehaviour?.ToggleShowActionPath(this);
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            ToggleShowActionPath();
+            SelectChess();
         }
 
         public void OnGameEnd()

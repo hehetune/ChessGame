@@ -49,9 +49,10 @@ MonoBehaviour:
   available: 0
   spriteRenderer: {fileID: 3046296858446028027}
   chessContainer: {fileID: 3046296858817173076}
-  canGoColor: {r: 0.45882353, g: 1, b: 0.47843137, a: 0.3137255}
-  canEatColor: {r: 1, g: 0, b: 0.14901961, a: 0.3137255}
+  canMoveToColor: {r: 0.37254903, g: 0.972549, b: 0.5920786, a: 0.5019608}
+  canBeEatColor: {r: 1, g: 0.3160377, b: 0.3160377, a: 0.5019608}
   normalColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 1, g: 0.9134257, b: 0.36320752, a: 0.5019608}
   boardPosition:
     x: 0
     y: 0

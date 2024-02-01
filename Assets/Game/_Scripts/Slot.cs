@@ -1,9 +1,18 @@
 using System;
 using Game.Core.ObserverPattern;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game._Scripts
 {
+    public enum SlotState
+    {
+        Normal = 0,
+        CanBeEat = 1,
+        CanMoveTo = 2,
+        Selected = 3
+    }
+
     [Serializable]
     public class Slot : MonoBehaviour, IObserver
     {
@@ -12,18 +21,19 @@ namespace Game._Scripts
         public SpriteRenderer spriteRenderer;
         public Transform chessContainer;
 
-        public Color canGoColor;
-        public Color canEatColor;
+        public Color canMoveToColor;
+        public Color canBeEatColor;
         public Color normalColor;
+        public Color selectedColor;
 
         public BoardPosition boardPosition = new();
-        
+
         //Spawn chess at game start
         public ChessRole chessRole;
         public ChessTeam chessTeam;
         public GameObject chessPrefab;
         public bool isSpawnChessAtStart = false;
-        
+
         public void SetPosition(int x, int y)
         {
             boardPosition.x = x;
@@ -44,9 +54,23 @@ namespace Game._Scripts
             if (isSpawnChessAtStart) Subject.Unregister(this, EventKey.StartGame);
         }
 
-        public void Mark(bool canEat)
+        public void Mark(SlotState state)
         {
-            spriteRenderer.color = canEat ? canEatColor : canGoColor;
+            switch (state)
+            {
+                case SlotState.Normal:
+                    spriteRenderer.color = normalColor;
+                    break;
+                case SlotState.CanBeEat:
+                    spriteRenderer.color = canBeEatColor;
+                    break;
+                case SlotState.CanMoveTo:
+                    spriteRenderer.color = canMoveToColor;
+                    break;
+                case SlotState.Selected:
+                    spriteRenderer.color = selectedColor;
+                    break;
+            }
         }
 
         public void UnMark()

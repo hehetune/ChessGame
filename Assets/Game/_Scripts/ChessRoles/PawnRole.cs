@@ -19,7 +19,7 @@ namespace Game._Scripts.ChessRoles
 
                 if (Board.Instance.IsValidMove(chessUnit.boardPosition.x, chessUnit.boardPosition.y + i * multiply))
                 {
-                    Board.Instance.MarkSlot(chessUnit.boardPosition.x, chessUnit.boardPosition.y + i * multiply);
+                    Board.Instance.MarkSlot(chessUnit.boardPosition.x, chessUnit.boardPosition.y + i * multiply, SlotState.CanMoveTo);
                 }
                 else
                 {
@@ -30,13 +30,13 @@ namespace Game._Scripts.ChessRoles
             Debug.Log((chessUnit.boardPosition.x + 1 * multiply) + ", " + (chessUnit.boardPosition.y + 1 * multiply));
             if (Board.Instance.IsValidEat(chessUnit.boardPosition.x + 1 * multiply, chessUnit.boardPosition.y + 1 * multiply))
             {
-                Board.Instance.MarkSlot(chessUnit.boardPosition.x + 1 * multiply, chessUnit.boardPosition.y + 1 * multiply, true);
+                Board.Instance.MarkSlot(chessUnit.boardPosition.x + 1 * multiply, chessUnit.boardPosition.y + 1 * multiply, SlotState.CanBeEat);
             }
             
             Debug.Log((chessUnit.boardPosition.x - 1 * multiply) + ", " + (chessUnit.boardPosition.y + 1 * multiply));
             if (Board.Instance.IsValidEat(chessUnit.boardPosition.x - 1 * multiply, chessUnit.boardPosition.y + 1 * multiply))
             {
-                Board.Instance.MarkSlot(chessUnit.boardPosition.x - 1 * multiply, chessUnit.boardPosition.y + 1 * multiply, true);
+                Board.Instance.MarkSlot(chessUnit.boardPosition.x - 1 * multiply, chessUnit.boardPosition.y + 1 * multiply, SlotState.CanBeEat);
             }
         }
     }
