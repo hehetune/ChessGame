@@ -86,15 +86,22 @@ namespace Game._Scripts
         {
             return x >= 0 && y >= 0 && x < 8 && y < 8 && rowsOfSlot[y].row[x].available;
         }
+        
+        public bool IsValidMove(BoardPosition position)
+        {
+            return position is { x: >= 0 and < 8, y: >= 0 and < 8 } && rowsOfSlot[position.y].row[position.x].available;
+        }
 
         public bool IsValidEat(int x, int y)
         {
             return x >= 0 && y >= 0 && x < 8 && y < 8 && !rowsOfSlot[y].row[x].available;
         }
 
-        public void MoveChess(ChessUnit chessUnit, int x, int y)
+        public void MoveChess(ChessUnit chessUnit, BoardPosition destination)
         {
-            chessUnit.transform.position = rowsOfSlot[y].row[x].transform.position;
+            GetSlotByChessUnit(chessUnit).SetChessUnit(null);
+            chessUnit.transform.position = GetSlotByBoardPosition(destination).transform.position;
+            GetSlotByBoardPosition(destination).SetChessUnit(chessUnit);
         }
 
         public void MarkSlot(int x, int y, SlotState slotState)
@@ -126,6 +133,9 @@ namespace Game._Scripts
         private Slot GetSlotByChessUnit(ChessUnit chessUnit) =>
             rowsOfSlot[chessUnit.boardPosition.y].row[chessUnit.boardPosition.x];
 
+        private Slot GetSlotByBoardPosition(BoardPosition boardPosition) =>
+            rowsOfSlot[boardPosition.y].row[boardPosition.x];
+        
         private void SetupInstance()
         {
             if (Instance != null)
@@ -136,5 +146,11 @@ namespace Game._Scripts
 
             Instance = this;
         }
+
+        // public void MoveChess(BoardPosition position)
+        // {
+        //     if (!IsValidMove(position)) return;
+        //     curActiveChessUnit.
+        // }
     }
 }

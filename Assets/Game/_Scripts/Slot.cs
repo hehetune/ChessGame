@@ -1,6 +1,7 @@
 using System;
 using Game.Core.ObserverPattern;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 namespace Game._Scripts
@@ -14,9 +15,12 @@ namespace Game._Scripts
     }
 
     [Serializable]
-    public class Slot : MonoBehaviour, IObserver
+    public class Slot : MonoBehaviour, IObserver, IPointerDownHandler
     {
+        [Header("Slot states")]
         public bool available;
+        public SlotState curState = SlotState.Normal;
+        public BoardPosition boardPosition = new();
 
         public SpriteRenderer spriteRenderer;
         public Transform chessContainer;
@@ -26,13 +30,13 @@ namespace Game._Scripts
         public Color normalColor;
         public Color selectedColor;
 
-        public BoardPosition boardPosition = new();
+        public ChessUnit curChessUnit = null;
 
-        //Spawn chess at game start
+        //Can spawn chess at game start?
+        public bool isSpawnChessAtStart = false;
         public ChessRole chessRole;
         public ChessTeam chessTeam;
         public GameObject chessPrefab;
-        public bool isSpawnChessAtStart = false;
 
         public void SetPosition(int x, int y)
         {
@@ -78,12 +82,19 @@ namespace Game._Scripts
             spriteRenderer.color = normalColor;
         }
 
+        public void SetChessUnit(ChessUnit chessUnit)
+        {
+            curChessUnit = chessUnit;
+            available = chessUnit == null ? true : false;
+        }
+
         private void SpawnChess()
         {
             GameObject go = Instantiate(chessPrefab, chessContainer);
 
             ChessUnit chessUnit = go.GetComponent<ChessUnit>();
             chessUnit.Initialize(boardPosition.x, boardPosition.y, chessRole, chessTeam);
+            curChessUnit = chessUnit;
             available = false;
         }
 
@@ -107,6 +118,23 @@ namespace Game._Scripts
                 case EventKey.StartGame:
                     OnGameStart();
                     break;
+                default: break;
+            }
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            if (curState == SlotState.Normal) return;
+        }
+
+        private void HandleSlotInteract()
+        {
+            switch (curState)
+            {
+                case SlotState.CanMoveTo:
+                    GameManager.Instance.curPlayer.RunPlayerMoveCommand(boardPosition);
+                    break;
+                case SlotState.Normal: break;
                 default: break;
             }
         }

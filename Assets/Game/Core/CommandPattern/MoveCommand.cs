@@ -1,4 +1,5 @@
 using Game._Scripts;
+using Game._Scripts.PlayerScripts;
 using UnityEngine;
 
 namespace Game.Core.CommandPattern
@@ -6,24 +7,22 @@ namespace Game.Core.CommandPattern
     public class MoveCommand : ICommand
     {
         Player player;
-        private int xMove;
-        private int yMove;
+        private BoardPosition _boardPosition;
 
-        public MoveCommand(Player player, int x, int y)
+        public MoveCommand(Player player, BoardPosition boardPosition)
         {
             this.player = player;
-            this.xMove = x;
-            this.yMove = y;
+            this._boardPosition = boardPosition;
         }
 
         public void Execute()
         {
-            player.Move(xMove, yMove);
+            player.Move(_boardPosition);
         }
 
         public void Undo()
         {
-            player.Move(xMove, yMove);
+            player.Move(_boardPosition);
         }
     }
 }

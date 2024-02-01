@@ -79,6 +79,8 @@ namespace Game._Scripts
 
         private void SelectChess()
         {
+            if (GameManager.Instance.curPlayer.chessTeam != chessTeam) return;
+            
             if (Board.Instance.curActiveChessUnit == this)
             {
                 Board.Instance.SetSelectChess(null);
