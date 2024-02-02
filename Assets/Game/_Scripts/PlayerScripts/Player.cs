@@ -1,5 +1,6 @@
 using System;
 using Game.Core.CommandPattern;
+using UnityEngine;
 
 namespace Game._Scripts.PlayerScripts
 {
@@ -26,21 +27,40 @@ namespace Game._Scripts.PlayerScripts
         //         default: break;
         //     }
         // }
-        
+
         public void RunPlayerMoveCommand(BoardPosition boardPosition)
         {
             if (Board.Instance.IsValidMove(boardPosition))
             {
-                ICommand command = new MoveCommand(this, boardPosition);
+                ICommand command =
+                    new MoveCommand(this, Board.Instance.curActiveChessUnit.boardPosition, boardPosition);
                 CommandInvoker.ExecuteCommand(command);
-                
-                GameManager.Instance.OnPlayerMoved();
+
+                GameManager.Instance.OnPlayerPerformedAction();
             }
         }
 
-        public void Move(BoardPosition boardPosition)
+        public void RunPlayerAttackCommand(ChessUnit target)
+        {
+            Debug.Log("RunPlayerAttackCommand");
+            if (Board.Instance.IsValidAttack(target))
+            {
+                Debug.Log("IsValidAttack");
+                ICommand command = new AttackCommand(this, Board.Instance.curActiveChessUnit.boardPosition, target);
+                CommandInvoker.ExecuteCommand(command);
+
+                GameManager.Instance.OnPlayerPerformedAction();
+            }
+        }
+
+        public void MoveChess(BoardPosition boardPosition)
         {
             Board.Instance.MoveCurrentChess(boardPosition);
+        }
+
+        public void AttackTarget(ChessUnit target)
+        {
+            Board.Instance.MoveCurrentChess(target.boardPosition);
         }
     }
 }

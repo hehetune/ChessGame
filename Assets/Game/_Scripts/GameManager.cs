@@ -76,7 +76,7 @@ namespace Game._Scripts
             StartGame();
         }
 
-        public void OnPlayerMoved()
+        public void OnPlayerPerformedAction()
         {
             SwitchPlayer();
             Subject.Notify(EventKey.UnmarkSlot);

@@ -9,7 +9,7 @@ namespace Game._Scripts
     public enum SlotState
     {
         Normal = 0,
-        CanBeEat = 1,
+        CanAttack = 1,
         CanMoveTo = 2,
         Selected = 3
     }
@@ -17,8 +17,7 @@ namespace Game._Scripts
     [Serializable]
     public class Slot : MonoBehaviour, IObserver, IPointerDownHandler
     {
-        [Header("Slot states")]
-        public bool available;
+        [Header("Slot states")] public bool available;
         public SlotState curState = SlotState.Normal;
         public BoardPosition boardPosition = new();
 
@@ -26,7 +25,7 @@ namespace Game._Scripts
         public Transform chessContainer;
 
         public Color canMoveToColor;
-        public Color canBeEatColor;
+        public Color canAttackColor;
         public Color normalColor;
         public Color selectedColor;
 
@@ -59,6 +58,13 @@ namespace Game._Scripts
             if (isSpawnChessAtStart) Subject.Unregister(this, EventKey.StartGame);
         }
 
+        private void ResetSlot()
+        {
+            curChessUnit = null;
+            curState = SlotState.Normal;
+            available = true;
+        }
+
         public void Mark(SlotState state)
         {
             curState = state;
@@ -68,8 +74,8 @@ namespace Game._Scripts
                 case SlotState.Normal:
                     spriteRenderer.color = normalColor;
                     break;
-                case SlotState.CanBeEat:
-                    spriteRenderer.color = canBeEatColor;
+                case SlotState.CanAttack:
+                    spriteRenderer.color = canAttackColor;
                     break;
                 case SlotState.CanMoveTo:
                     spriteRenderer.color = canMoveToColor;
@@ -82,16 +88,18 @@ namespace Game._Scripts
 
         public void UnMark()
         {
+            curState = SlotState.Normal;
             spriteRenderer.color = normalColor;
         }
 
         public void SetChessUnit(ChessUnit chessUnit)
         {
             curChessUnit = chessUnit;
-            chessUnit.transform.SetParent(chessContainer);
-            chessUnit.transform.localPosition = Vector3.zero;
-            chessUnit.boardPosition = boardPosition;
-            available = chessUnit == null ? true : false;
+            available = curChessUnit == null ? true : false;
+            if (curChessUnit == null) return;
+            curChessUnit.transform.SetParent(chessContainer);
+            curChessUnit.transform.localPosition = Vector3.zero;
+            curChessUnit.boardPosition = boardPosition;
         }
 
         private void SpawnChess()
@@ -115,6 +123,11 @@ namespace Game._Scripts
             else available = true;
         }
 
+        private void OnEndGame()
+        {
+            ResetSlot();
+        }
+
         public void OnNotify(EventKey key)
         {
             switch (key)
@@ -125,22 +138,34 @@ namespace Game._Scripts
                 case EventKey.StartGame:
                     OnGameStart();
                     break;
+                case EventKey.EndGame:
+                    OnEndGame();
+                    break;
                 default: break;
             }
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (curChessUnit != null && curState == SlotState.Normal)
+            {
+                curChessUnit.SelectChess();
+                return;
+            }
+
             HandleSlotInteract();
         }
 
         private void HandleSlotInteract()
         {
+            Debug.Log(curState);
             switch (curState)
             {
                 case SlotState.CanMoveTo:
-                    Debug.Log("Select chess");
                     GameManager.Instance.curPlayer.RunPlayerMoveCommand(boardPosition);
+                    break;
+                case SlotState.CanAttack:
+                    GameManager.Instance.curPlayer.RunPlayerAttackCommand(curChessUnit);
                     break;
                 case SlotState.Normal: break;
                 default: break;

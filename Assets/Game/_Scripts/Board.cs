@@ -42,6 +42,8 @@ namespace Game._Scripts
         public ChessUnit curActiveChessUnit = null;
         // public Action UnmarkAllSlot;
 
+        public Queue<ChessUnit> DestroyedChessUnits = new();
+
         private void Awake()
         {
             SetupInstance();
@@ -86,15 +88,39 @@ namespace Game._Scripts
         {
             return x >= 0 && y >= 0 && x < 8 && y < 8 && rowsOfSlot[y].row[x].available;
         }
-        
+
         public bool IsValidMove(BoardPosition position)
         {
             return position is { x: >= 0 and < 8, y: >= 0 and < 8 } && rowsOfSlot[position.y].row[position.x].available;
         }
 
-        public bool IsValidEat(int x, int y)
+        public bool IsValidAttack(int x, int y)
         {
-            return x >= 0 && y >= 0 && x < 8 && y < 8 && !rowsOfSlot[y].row[x].available;
+            if (x < 0 || y < 0 || x >= 8 || y >= 8) return false;
+            ChessUnit target = GetSlotByPosition(x, y).curChessUnit;
+            return IsValidAttack(target);
+        }
+
+        public bool IsValidAttack(ChessUnit target)
+        {
+            if (target == null) return false;
+            return target.boardPosition is { x: >= 0 and < 8, y: >= 0 and < 8 } &&
+                   !rowsOfSlot[target.boardPosition.y].row[target.boardPosition.x].available &&
+                   GameManager.Instance.curPlayer.chessTeam != target.chessTeam;
+        }
+
+        public void DispawnChessUnit(ChessUnit chessUnit)
+        {
+            GetSlotByChessUnit(chessUnit).curChessUnit = null;
+            chessUnit.gameObject.SetActive(false);
+            DestroyedChessUnits.Enqueue(chessUnit);
+        }
+
+        public void RespawnChessUnit()
+        {
+            ChessUnit target = DestroyedChessUnits.Dequeue();
+            GetSlotByChessUnit(target).curChessUnit = target;
+            target.gameObject.SetActive(true);
         }
 
         public void MoveCurrentChess(BoardPosition destination)
@@ -135,6 +161,9 @@ namespace Game._Scripts
         private Slot GetSlotByBoardPosition(BoardPosition boardPosition) =>
             rowsOfSlot[boardPosition.y].row[boardPosition.x];
         
+        private Slot GetSlotByPosition(int x, int y) =>
+            rowsOfSlot[y].row[x];
+        
         private void SetupInstance()
         {
             if (Instance != null)
@@ -144,6 +173,11 @@ namespace Game._Scripts
             }
 
             Instance = this;
+        }
+        
+        public static bool IsWithinBounds(int x, int y)
+        {
+            return x >= 0 && y >= 0 && x < 8 && y < 8;
         }
 
         // public void MoveChess(BoardPosition position)

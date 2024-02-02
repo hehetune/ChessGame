@@ -55,7 +55,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 3046296858446028027}
   chessContainer: {fileID: 3046296858817173076}
   canMoveToColor: {r: 0.37254903, g: 0.972549, b: 0.5920786, a: 0.5019608}
-  canBeEatColor: {r: 1, g: 0.3160377, b: 0.3160377, a: 0.5019608}
+  canAttackColor: {r: 1, g: 0.4198113, b: 0.4198113, a: 0.5019608}
   normalColor: {r: 0, g: 0, b: 0, a: 0}
   selectedColor: {r: 1, g: 0.9134257, b: 0.36320752, a: 0.5019608}
   curChessUnit: {fileID: 0}

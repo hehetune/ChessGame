@@ -27,7 +27,7 @@ namespace Game._Scripts
         Black = 1,
     }
 
-    public class ChessUnit : MonoBehaviour, IPointerDownHandler, IObserver
+    public class ChessUnit : MonoBehaviour, IObserver
     {
         public ChessRole chessRole;
         public ChessTeam chessTeam;
@@ -40,13 +40,21 @@ namespace Game._Scripts
 
         private void OnEnable()
         {
-            // GameManager.Instance.EndGameAction += OnGameEnd;
-            Subject.Register(this, EventKey.EndGame);
+            RegisterEvents();
         }
 
         private void OnDisable()
         {
-            // GameManager.Instance.EndGameAction -= OnGameEnd;
+            UnregisterEvents();
+        }
+
+        private void RegisterEvents()
+        {
+            Subject.Register(this, EventKey.EndGame);
+        }
+        
+        private void UnregisterEvents()
+        {
             Subject.Unregister(this, EventKey.EndGame);
         }
 
@@ -67,25 +75,25 @@ namespace Game._Scripts
                     chessBehaviour = new PawnBehaviour();
                     break;
                 case ChessRole.Bishop:
-                    chessBehaviour = new PawnBehaviour();
+                    chessBehaviour = new BishopBehaviour();
                     break;
                 case ChessRole.King:
-                    chessBehaviour = new PawnBehaviour();
+                    chessBehaviour = new KingBehaviour();
                     break;
                 case ChessRole.Queen:
-                    chessBehaviour = new PawnBehaviour();
+                    chessBehaviour = new QueenBehaviour();
                     break;
                 case ChessRole.Knight:
-                    chessBehaviour = new PawnBehaviour();
+                    chessBehaviour = new KnightBehaviour();
                     break;
                 case ChessRole.Rook:
-                    chessBehaviour = new PawnBehaviour();
+                    chessBehaviour = new RookBehaviour();
                     break;
                 default: break;
             }
         }
 
-        private void SelectChess()
+        public void SelectChess()
         {
             if (GameManager.Instance.curPlayer.chessTeam != chessTeam) return;
             
@@ -101,14 +109,23 @@ namespace Game._Scripts
             chessBehaviour?.ToggleShowActionPath(this);
         }
 
-        public void OnPointerDown(PointerEventData eventData)
+        // public void OnPointerDown(PointerEventData eventData)
+        // {
+        //     SelectChess();
+        // }
+
+        public void Dispawn()
         {
-            SelectChess();
+            gameObject.SetActive(false);
         }
 
-        public void OnGameEnd()
+        public void Respawn()
         {
-            Subject.Unregister(this, EventKey.EndGame);
+            gameObject.SetActive(true);
+        }
+
+        public void OnEndGame()
+        {
             Destroy(gameObject);
         }
 
@@ -117,7 +134,7 @@ namespace Game._Scripts
             switch (key)
             {
                 case EventKey.EndGame:
-                    OnGameEnd();
+                    OnEndGame();
                     break;
                 default: break;
             }
