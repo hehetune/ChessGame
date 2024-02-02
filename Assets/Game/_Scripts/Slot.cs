@@ -36,6 +36,7 @@ namespace Game._Scripts
         public bool isSpawnChessAtStart = false;
         public ChessRole chessRole;
         public ChessTeam chessTeam;
+        public ChessColor chessColor;
         public GameObject chessPrefab;
 
         public void SetPosition(int x, int y)
@@ -60,6 +61,8 @@ namespace Game._Scripts
 
         public void Mark(SlotState state)
         {
+            curState = state;
+
             switch (state)
             {
                 case SlotState.Normal:
@@ -85,6 +88,9 @@ namespace Game._Scripts
         public void SetChessUnit(ChessUnit chessUnit)
         {
             curChessUnit = chessUnit;
+            chessUnit.transform.SetParent(chessContainer);
+            chessUnit.transform.localPosition = Vector3.zero;
+            chessUnit.boardPosition = boardPosition;
             available = chessUnit == null ? true : false;
         }
 
@@ -93,7 +99,7 @@ namespace Game._Scripts
             GameObject go = Instantiate(chessPrefab, chessContainer);
 
             ChessUnit chessUnit = go.GetComponent<ChessUnit>();
-            chessUnit.Initialize(boardPosition.x, boardPosition.y, chessRole, chessTeam);
+            chessUnit.Initialize(boardPosition.x, boardPosition.y, chessRole, chessTeam, chessColor);
             curChessUnit = chessUnit;
             available = false;
         }
@@ -103,6 +109,7 @@ namespace Game._Scripts
             UnMark();
             if (isSpawnChessAtStart)
             {
+                chessColor = GameManager.Instance.GetChessColorByChessTeam(chessTeam);
                 SpawnChess();
             }
             else available = true;
@@ -124,7 +131,7 @@ namespace Game._Scripts
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (curState == SlotState.Normal) return;
+            HandleSlotInteract();
         }
 
         private void HandleSlotInteract()
@@ -132,6 +139,7 @@ namespace Game._Scripts
             switch (curState)
             {
                 case SlotState.CanMoveTo:
+                    Debug.Log("Select chess");
                     GameManager.Instance.curPlayer.RunPlayerMoveCommand(boardPosition);
                     break;
                 case SlotState.Normal: break;

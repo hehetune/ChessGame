@@ -1,5 +1,6 @@
 using System;
 using Game._Scripts.PlayerScripts;
+using Game._Scripts.UI;
 using Game.Core.ObserverPattern;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,36 +20,48 @@ namespace Game._Scripts
         // public Action EndGameAction;
         public GameMode gameMode;
 
-        public Button startNewGameBtn;
-
         public Player FirstPlayer;
         public Player SecondPlayer;
+        public ChessColor firstPlayerChessColor;
+        public ChessColor secondPlayerChessColor;
 
         public Player curPlayer;
+
+        private UI_InGame UI_InGame;
         
         private void Awake()
         {
             if (Instance != null) Destroy(gameObject);
             Instance = this;
             // StartGame();
+
+            UI_InGame = FindObjectOfType<UI_InGame>();
         }
 
         private void InitilizePlayers()
         {
-            FirstPlayer = new HumanPlayer(ChessTeam.Down);
+            FirstPlayer = new HumanPlayer(ChessTeam.Down, firstPlayerChessColor);
             if (gameMode == GameMode.HumanVsHuman)
             {
-                SecondPlayer = new HumanPlayer(ChessTeam.Up);
+                SecondPlayer = new HumanPlayer(ChessTeam.Up, secondPlayerChessColor);
             }
-            else SecondPlayer = new AIPlayer(ChessTeam.Up);
+            else SecondPlayer = new AIPlayer(ChessTeam.Up, secondPlayerChessColor);
 
             curPlayer = FirstPlayer;
+            UI_InGame.SetPlayerTurnText(curPlayer.chessColor);
         }
 
         public void StartGame()
         {
+            InitilizePlayers();
             Subject.Notify(EventKey.StartGame);
+            
             // StartGameAction?.Invoke();
+        }
+
+        public ChessColor GetChessColorByChessTeam(ChessTeam chessTeam)
+        {
+            return chessTeam == FirstPlayer.chessTeam ? firstPlayerChessColor : secondPlayerChessColor;
         }
 
         public void EndGame()
@@ -61,6 +74,17 @@ namespace Game._Scripts
         {
             EndGame();
             StartGame();
+        }
+
+        public void OnPlayerMoved()
+        {
+            SwitchPlayer();
+            Subject.Notify(EventKey.UnmarkSlot);
+        }
+
+        public void SwitchPlayer()
+        {
+            curPlayer = curPlayer == FirstPlayer ? SecondPlayer : FirstPlayer;
         }
     }
 }

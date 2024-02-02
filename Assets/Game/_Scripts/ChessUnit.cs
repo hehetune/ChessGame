@@ -21,10 +21,17 @@ namespace Game._Scripts
         Down = 1
     }
 
+    public enum ChessColor
+    {
+        White = 0,
+        Black = 1,
+    }
+
     public class ChessUnit : MonoBehaviour, IPointerDownHandler, IObserver
     {
         public ChessRole chessRole;
         public ChessTeam chessTeam;
+        public ChessColor chessColor;
 
         public BoardPosition boardPosition;
         public SpriteRenderer chessSprite;
@@ -43,13 +50,14 @@ namespace Game._Scripts
             Subject.Unregister(this, EventKey.EndGame);
         }
 
-        public void Initialize(int x, int y, ChessRole chessRole, ChessTeam chessTeam)
+        public void Initialize(int x, int y, ChessRole chessRole, ChessTeam chessTeam, ChessColor chessColor)
         {
             boardPosition = new BoardPosition(x, y);
             this.chessRole = chessRole;
             this.chessTeam = chessTeam;
+            this.chessColor = chessColor;
             chessSprite.sprite =
-                chessTeam == ChessTeam.Up
+                chessColor == ChessColor.Black
                     ? GameStaticAsset.Instance.blackChessSpritesDict[chessRole]
                     : GameStaticAsset.Instance.whiteChessSpritesDict[chessRole];
 
@@ -80,6 +88,8 @@ namespace Game._Scripts
         private void SelectChess()
         {
             if (GameManager.Instance.curPlayer.chessTeam != chessTeam) return;
+            
+            Debug.Log("Select chess");
             
             if (Board.Instance.curActiveChessUnit == this)
             {

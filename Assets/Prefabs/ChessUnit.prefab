@@ -70,9 +70,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 525199705
-  m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingLayerID: -1194746349
+  m_SortingLayer: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -1350365746, guid: 10edd1bcbad590843972fefecd9547ba, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -132,6 +132,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chessRole: 0
   chessTeam: 0
+  chessColor: 0
+  boardPosition:
+    x: 0
+    y: 0
   chessSprite: {fileID: 6738488196405040537}
 --- !u!61 &7345080331340983089
 BoxCollider2D:

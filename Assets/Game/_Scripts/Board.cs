@@ -97,16 +97,15 @@ namespace Game._Scripts
             return x >= 0 && y >= 0 && x < 8 && y < 8 && !rowsOfSlot[y].row[x].available;
         }
 
-        public void MoveChess(ChessUnit chessUnit, BoardPosition destination)
+        public void MoveCurrentChess(BoardPosition destination)
         {
-            GetSlotByChessUnit(chessUnit).SetChessUnit(null);
-            chessUnit.transform.position = GetSlotByBoardPosition(destination).transform.position;
-            GetSlotByBoardPosition(destination).SetChessUnit(chessUnit);
+            GetSlotByChessUnit(curActiveChessUnit).SetChessUnit(null);
+            GetSlotByBoardPosition(destination).SetChessUnit(curActiveChessUnit);
         }
 
         public void MarkSlot(int x, int y, SlotState slotState)
         {
-            Debug.Log("MarkSlot " + x + "," + y);
+            // Debug.Log("MarkSlot " + x + "," + y);
             rowsOfSlot[y].row[x].Mark(slotState);
         }
 

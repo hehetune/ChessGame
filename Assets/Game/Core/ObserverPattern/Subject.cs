@@ -26,7 +26,7 @@ namespace Game.Core.ObserverPattern
         public static void Notify(EventKey key)
         {
             if (!_observers.ContainsKey(key)) return;
-            Debug.Log(key);
+            // Debug.Log(key);
             cacheObservers.Clear();
             cacheObservers.AddRange(_observers[key]);
             foreach (var observer in cacheObservers)
