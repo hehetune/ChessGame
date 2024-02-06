@@ -27,6 +27,23 @@ namespace Game._Scripts
         Black = 1,
     }
 
+    public class ChessState
+    {
+        public ChessRole chessRole;
+        public ChessTeam chessTeam;
+        public ChessColor chessColor;
+
+        public BoardPosition boardPosition;
+
+        public void Save(ChessUnit chessUnit)
+        {
+            chessRole = chessUnit.chessRole;
+            chessTeam = chessUnit.chessTeam;
+            chessColor = chessUnit.chessColor;
+            boardPosition = chessUnit.boardPosition;
+        }
+    }
+
     public class ChessUnit : MonoBehaviour, IObserver
     {
         public ChessRole chessRole;

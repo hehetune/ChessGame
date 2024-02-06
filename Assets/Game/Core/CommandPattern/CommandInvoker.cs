@@ -4,8 +4,8 @@ namespace Game.Core.CommandPattern
 {
     public class CommandInvoker
     {
-        private static Stack<ICommand> _undoStack = new Stack<ICommand>();
-        public static void ExecuteCommand(ICommand command)
+        private static Stack<ChessCommand> _undoStack = new Stack<ChessCommand>();
+        public static void ExecuteCommand(ChessCommand command)
         {
             command.Execute();
             _undoStack.Push(command);
@@ -14,7 +14,7 @@ namespace Game.Core.CommandPattern
         {
             if (_undoStack.Count > 0)
             {
-                ICommand activeCommand = _undoStack.Pop();
+                ChessCommand activeCommand = _undoStack.Pop();
                 activeCommand.Undo();
             }
         }

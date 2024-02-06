@@ -15,25 +15,14 @@ namespace Game._Scripts.PlayerScripts
             this.chessColor = chessColor;
         }
 
-        // public void RunPlayerCommand(CommandType commandType, ...params)
-        // {
-        //     switch (commandType)
-        //     {
-        //         case CommandType.MoveCommand:
-        //             RunPlayerMoveCommand(params);
-        //             break;
-        //         case CommandType.AttackCommand:
-        //             break;
-        //         default: break;
-        //     }
-        // }
-
         public void RunPlayerMoveCommand(BoardPosition boardPosition)
         {
             if (Board.Instance.IsValidMove(boardPosition))
             {
-                ICommand command =
-                    new MoveCommand(this, Board.Instance.curActiveChessUnit.boardPosition, boardPosition);
+                MoveCommand command =
+                    new MoveCommand();
+                command.Initialize(this, Board.Instance.curActiveChessUnit, boardPosition, GameManager.Instance.currentTurnIndex);
+                
                 CommandInvoker.ExecuteCommand(command);
 
                 GameManager.Instance.OnPlayerPerformedAction();
@@ -42,25 +31,30 @@ namespace Game._Scripts.PlayerScripts
 
         public void RunPlayerAttackCommand(ChessUnit target)
         {
-            Debug.Log("RunPlayerAttackCommand");
             if (Board.Instance.IsValidAttack(target))
             {
-                Debug.Log("IsValidAttack");
-                ICommand command = new AttackCommand(this, Board.Instance.curActiveChessUnit.boardPosition, target);
+                AttackCommand command = new AttackCommand();
+                // this, Board.Instance.curActiveChessUnit.boardPosition, target
+                command.Initialize(this, Board.Instance.curActiveChessUnit, target, GameManager.Instance.currentTurnIndex);
                 CommandInvoker.ExecuteCommand(command);
 
                 GameManager.Instance.OnPlayerPerformedAction();
             }
         }
 
-        public void MoveChess(BoardPosition boardPosition)
+        // public void MoveCurrentChess(BoardPosition boardPosition)
+        // {
+        //     Board.Instance.MoveCurrentChess(boardPosition);
+        // }
+
+        public void MoveChess(ChessUnit chessUnit, BoardPosition boardPosition)
         {
-            Board.Instance.MoveCurrentChess(boardPosition);
+            Board.Instance.MoveChess(chessUnit, boardPosition);
         }
 
         public void AttackTarget(ChessUnit target)
         {
-            Board.Instance.MoveCurrentChess(target.boardPosition);
+            Board.Instance.MoveChess(target, target.boardPosition);
         }
     }
 }

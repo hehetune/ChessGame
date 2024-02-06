@@ -3,31 +3,29 @@ using Game._Scripts.PlayerScripts;
 
 namespace Game.Core.CommandPattern
 {
-    public class AttackCommand : ICommand
+    public class AttackCommand : ChessCommand
     {
-        Player player;
-        private BoardPosition _prevPosition;
-        private ChessUnit _cacheChessUnit;
-        private BoardPosition _destination;
+        protected ChessUnit _targetUnit;
+        protected BoardPosition _afterPosition;
 
-        public AttackCommand(Player player, BoardPosition curPosition, ChessUnit attackableUnit)
+        public virtual void Initialize(Player player, ChessUnit selectedUnit, ChessUnit targetUnit,
+            int turnIndex)
         {
-            this.player = player;
-            _cacheChessUnit = attackableUnit;
-            _prevPosition = curPosition;
-            _destination = _cacheChessUnit.boardPosition;
+            base.Initialize(player, selectedUnit, turnIndex);
+            this._targetUnit = targetUnit;
+            this._afterPosition = targetUnit.boardPosition;
         }
 
-        public void Execute()
+        public override void Execute()
         {
-            Board.Instance.DispawnChessUnit(_cacheChessUnit);
-            player.MoveChess(_destination);
+            Board.Instance.DispawnChessUnit(_targetUnit);
+            _player.MoveChess(_selectedUnit, _afterPosition);
         }
 
-        public void Undo()
+        public override void Undo()
         {
             Board.Instance.RespawnChessUnit();
-            player.MoveChess(_prevPosition);
+            _player.MoveChess(_selectedUnit, _prevPosition);
         }
     }
 }

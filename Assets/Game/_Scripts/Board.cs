@@ -123,10 +123,16 @@ namespace Game._Scripts
             target.gameObject.SetActive(true);
         }
 
-        public void MoveCurrentChess(BoardPosition destination)
+        // public void MoveCurrentChess(BoardPosition destination)
+        // {
+        //     GetSlotByChessUnit(curActiveChessUnit).SetChessUnit(null);
+        //     GetSlotByBoardPosition(destination).SetChessUnit(curActiveChessUnit);
+        // }
+        
+        public void MoveChess(ChessUnit chessUnit, BoardPosition destination)
         {
-            GetSlotByChessUnit(curActiveChessUnit).SetChessUnit(null);
-            GetSlotByBoardPosition(destination).SetChessUnit(curActiveChessUnit);
+            GetSlotByChessUnit(chessUnit).SetChessUnit(null);
+            GetSlotByBoardPosition(destination).SetChessUnit(chessUnit);
         }
 
         public void MarkSlot(int x, int y, SlotState slotState)

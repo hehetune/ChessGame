@@ -4,27 +4,25 @@ using UnityEngine;
 
 namespace Game.Core.CommandPattern
 {
-    public class MoveCommand : ICommand
+    public class MoveCommand : ChessCommand
     {
-        Player player;
-        private BoardPosition _destination;
-        private BoardPosition _prevPosition;
-
-        public MoveCommand(Player player, BoardPosition currentPosition, BoardPosition destination)
+        protected BoardPosition _afterPosition;
+        
+        public virtual void Initialize(Player player, ChessUnit selectedUnit, BoardPosition afterPosition,
+            int turnIndex)
         {
-            this.player = player;
-            this._destination = destination;
-            this._prevPosition = currentPosition;
+            base.Initialize(player, selectedUnit, turnIndex);
+            this._afterPosition = afterPosition;
+        }
+        
+        public override void Execute()
+        {
+            _player.MoveChess(_selectedUnit, _afterPosition);
         }
 
-        public void Execute()
+        public override void Undo()
         {
-            player.MoveChess(_destination);
-        }
-
-        public void Undo()
-        {
-            player.MoveChess(_prevPosition);
+            _player.MoveChess(_selectedUnit, _prevPosition);
         }
     }
 }

@@ -24,6 +24,7 @@ namespace Game._Scripts
         public Player SecondPlayer;
         public ChessColor firstPlayerChessColor;
         public ChessColor secondPlayerChessColor;
+        public int currentTurnIndex = 0;
 
         public Player curPlayer;
 
