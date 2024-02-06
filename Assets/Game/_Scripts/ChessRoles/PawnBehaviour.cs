@@ -4,40 +4,44 @@ namespace Game._Scripts.ChessRoles
 {
     public class PawnBehaviour : ChessBehaviour
     {
-        // public override void CheckPathValid(ChessUnit chessUnit, BoardPosition destination)
-        // {
-        // }
+        private bool _isFirstMove = true;
+
+        public PawnBehaviour()
+        {
+            _isFirstMove = true;
+        }
 
         public override void ToggleShowActionPath(ChessUnit chessUnit)
         {
             int multiply = chessUnit.chessTeam == ChessTeam.Down ? 1 : -1;
-            // Debug.Log(chessUnit.boardPosition.x + ", " + chessUnit.boardPosition.y);
-            // Debug.Log("Go");
-            for (var i = 1; i <= 2; i ++)
+            for (var i = 1; i <= (_isFirstMove ? 2 : 1); i++)
             {
-                // Debug.Log(chessUnit.boardPosition.x + ", " + (chessUnit.boardPosition.y + i * multiply));
-
                 if (Board.Instance.IsValidMove(chessUnit.boardPosition.x, chessUnit.boardPosition.y + i * multiply))
                 {
-                    Board.Instance.MarkSlot(chessUnit.boardPosition.x, chessUnit.boardPosition.y + i * multiply, SlotState.CanMoveTo);
+                    Board.Instance.MarkSlot(chessUnit.boardPosition.x, chessUnit.boardPosition.y + i * multiply,
+                        SlotState.CanMoveTo);
                 }
                 else
                 {
                     break;
                 }
             }
-            // Debug.Log("Eat");
-            // Debug.Log((chessUnit.boardPosition.x + 1 * multiply) + ", " + (chessUnit.boardPosition.y + 1 * multiply));
-            if (Board.Instance.IsValidAttack(chessUnit.boardPosition.x + 1 * multiply, chessUnit.boardPosition.y + 1 * multiply))
+
+            if (Board.Instance.IsValidAttack(chessUnit.boardPosition.x + 1 * multiply,
+                    chessUnit.boardPosition.y + 1 * multiply))
             {
-                Board.Instance.MarkSlot(chessUnit.boardPosition.x + 1 * multiply, chessUnit.boardPosition.y + 1 * multiply, SlotState.CanAttack);
+                Board.Instance.MarkSlot(chessUnit.boardPosition.x + 1 * multiply,
+                    chessUnit.boardPosition.y + 1 * multiply, SlotState.CanAttack);
             }
-            
-            // Debug.Log((chessUnit.boardPosition.x - 1 * multiply) + ", " + (chessUnit.boardPosition.y + 1 * multiply));
-            if (Board.Instance.IsValidAttack(chessUnit.boardPosition.x - 1 * multiply, chessUnit.boardPosition.y + 1 * multiply))
+
+            if (Board.Instance.IsValidAttack(chessUnit.boardPosition.x - 1 * multiply,
+                    chessUnit.boardPosition.y + 1 * multiply))
             {
-                Board.Instance.MarkSlot(chessUnit.boardPosition.x - 1 * multiply, chessUnit.boardPosition.y + 1 * multiply, SlotState.CanAttack);
+                Board.Instance.MarkSlot(chessUnit.boardPosition.x - 1 * multiply,
+                    chessUnit.boardPosition.y + 1 * multiply, SlotState.CanAttack);
             }
+
+            if (_isFirstMove) _isFirstMove = false;
         }
     }
 }

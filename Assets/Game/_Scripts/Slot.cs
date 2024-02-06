@@ -147,7 +147,7 @@ namespace Game._Scripts
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (curChessUnit != null && curState == SlotState.Normal)
+            if (curChessUnit != null && curState is SlotState.Normal or SlotState.Selected)
             {
                 curChessUnit.SelectChess();
                 return;

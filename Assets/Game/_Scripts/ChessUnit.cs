@@ -97,8 +97,6 @@ namespace Game._Scripts
         {
             if (GameManager.Instance.curPlayer.chessTeam != chessTeam) return;
             
-            Debug.Log("Select chess");
-            
             if (Board.Instance.curActiveChessUnit == this)
             {
                 Board.Instance.SetSelectChess(null);
