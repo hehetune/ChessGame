@@ -32,8 +32,8 @@ namespace Game._Scripts
         public ChessRole chessRole;
         public ChessTeam chessTeam;
         public ChessColor chessColor;
-
         public BoardPosition boardPosition;
+        public bool isAlive;
 
         public void Save(ChessUnit chessUnit)
         {
@@ -41,6 +41,7 @@ namespace Game._Scripts
             chessTeam = chessUnit.chessTeam;
             chessColor = chessUnit.chessColor;
             boardPosition = chessUnit.boardPosition;
+            isAlive = chessUnit.gameObject.activeSelf;
         }
     }
 
@@ -153,6 +154,15 @@ namespace Game._Scripts
                     break;
                 default: break;
             }
+        }
+
+        public void RestoreFromState(ChessState chessState)
+        {
+            chessRole = chessState.chessRole;
+            chessTeam = chessState.chessTeam;
+            chessColor = chessState.chessColor;
+            boardPosition = chessState.boardPosition;
+            gameObject.SetActive(chessState.isAlive);
         }
     }
 }
